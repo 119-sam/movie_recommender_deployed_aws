@@ -1,28 +1,12 @@
-name: Deploy to EC2
+script: |
+  if [ ! -d "movie_recommender_deployed_aws" ]; then
+    git clone https://github.com/119-sam/movie_recommender_deployed_aws.git
+  fi
+  cd movie_recommender_deployed_aws
+  git pull
 
-on:
-  push:
-    branches:
-      - main
+  docker stop movie-recommender || true
+  docker rm movie-recommender || true
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: SSH and Deploy
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd movie_recommender_deployed_aws
-            git pull
-            docker stop movie-recommender || true
-            docker rm movie-recommender || true
-            docker build -t movie-recommender .
-            docker run -d -p 8501:8501 movie-recommender
+  docker build -t movie-recommender .
+  docker run -d -p 8501:8501 movie-recommender
