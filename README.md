@@ -11,7 +11,7 @@ A full-stack, content-based movie recommendation engine built with Python and St
 ## 🚀 Deployment Architecture
 
 ```
-Your Laptop (VS Code)
+Your Laptop 
         ↓  git push
 GitHub Repository
         ↓
